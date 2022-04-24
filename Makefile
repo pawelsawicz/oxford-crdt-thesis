@@ -1,0 +1,2 @@
+- load using quotes
+- file with module must start from capital letter
