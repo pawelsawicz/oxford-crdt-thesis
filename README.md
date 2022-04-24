@@ -4,9 +4,9 @@
 
 This repo is split into 3 areas
 
-- [source code](src/src.md)
-- [documentation](docs/docs.md) 
-- [thesis](thesis/thesis.md)
+- [source code](src/)
+- [documentation](docs/) 
+- [thesis](thesis/)
 
 #### Idris2
 
