@@ -7,7 +7,23 @@ import Data.Nat
 --- Incremental function: (+1)
 --- Merge function: if x > y then x else y
 
+interface Ord a => CrdtMergable a where
+    mergeStrategy : a -> a -> a
 
+--- proof: associative
+--- proof: commutative
+--- proof: idempotent
+CrdtMergable Nat where
+    mergeStrategy x y = case x `compare` y of
+                            LT => y
+                            GT => x
+                            EQ => x
+
+interface Ord a => CrdtIncrementable a where
+    incrementCrdt : a -> a
+
+CrdtIncrementable Nat where
+    incrementCrdt = (+1)
 
 --interface; ad-hoc polymorphism and extension
 --data; data structure
@@ -30,18 +46,6 @@ import Data.Nat
 ----idempotent; a + b <=> b + a <=> b <=> a
 
 -- partial order
-
-interface Ord a => CrdtMergable a where
-    mergeStrategy : a -> a -> a
-
---- proof: associative
---- proof: commutative
---- proof: idempotent
-CrdtMergable Nat where
-    mergeStrategy x y = case x `compare` y of
-                            LT => y
-                            GT => x
-                            EQ => x
 
 --interface Crdt a where
 --    value : [a] -> a
@@ -72,7 +76,7 @@ value r = sum r.state
 
 -- write part
 increment : Replica len -> Replica len
-increment r = let updatedState = updateAt r.replicaIndex (+1) r.state in
+increment r = let updatedState = updateAt r.replicaIndex incrementCrdt r.state in
                 createReplica r.replicaIndex updatedState
 
 
@@ -85,7 +89,6 @@ increment r = let updatedState = updateAt r.replicaIndex (+1) r.state in
 
 mergeLocal : Vect len Nat -> Vect len Nat -> Vect len Nat
 mergeLocal [] [] = []
---mergeLocal (x::[]) (y::[]) = [mergeStrategy x y]
 mergeLocal (x::xs) (y::ys) = (mergeStrategy x y) :: mergeLocal xs ys
 
 
@@ -131,16 +134,12 @@ valuePN r = let pValue = natToInteger (sum r.pState) in
 
 -- write part
 
---incrementFunc : (+1)
-incrementFunc : Nat -> Nat
-incrementFunc = (+1)
-
 incrementP : PNReplica len -> PNReplica len
-incrementP r = let newState = updateAt r.replicaIndex incrementFunc r.pState in
+incrementP r = let newState = updateAt r.replicaIndex incrementCrdt r.pState in
                 createPNReplica r.replicaIndex newState r.nState
 
 decrementN : PNReplica len -> PNReplica len
-decrementN r = let newState = updateAt r.replicaIndex incrementFunc r.nState in
+decrementN r = let newState = updateAt r.replicaIndex incrementCrdt r.nState in
                 createPNReplica r.replicaIndex r.pState newState
 
 
@@ -158,8 +157,6 @@ addPlusOneTest = (+1)
 testProof : (addPlusOneTest 1) = 2
 testProof = Refl
 
-
-
 --testProof = Refl
 ---decrement <=> incremenet, just acting on different constituents of pn-counter
 --- decrement/increment should be generalised, also can we update values via lenses ?
@@ -168,3 +165,11 @@ testProof = Refl
 ---- merge pn-counter
 
 ----- do merge on each crdt; merge p and merge n
+
+--Replica -> Crdt -> Type
+
+
+-- record Crdt a where
+--     constructor ConstructCrdt
+--     updateFunc : a -> a
+--     mergeFun
