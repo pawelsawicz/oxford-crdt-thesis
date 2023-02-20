@@ -7,46 +7,51 @@ import Data.Nat
 
 data Test = MkTest String Bool
 
-record TwoPhaseReplica (a : Type) where
-    constructor MkTwoPhaseReplica
-    state1 : List a
-    state2 : List a
+record Replica (a : Type) where
+    constructor MkReplica
+    addSet : List a
+    removeSet : List a
 
-createReplica : List a -> List a -> TwoPhaseReplica a
-createReplica xs ys = MkTwoPhaseReplica xs ys
+createReplica : List a -> List a -> Replica a
+createReplica xs ys = MkReplica xs ys
 
-testReplica : TwoPhaseReplica a
+testReplica : Replica a
 testReplica = createReplica [] []
 
-testReplica1 : TwoPhaseReplica Nat
+testReplica1 : Replica Nat
 testReplica1 = createReplica [] []
 
-testReplica2 : TwoPhaseReplica a
+testReplica2 : Replica a
 testReplica2 = createReplica [] []
 
 -- returns set difference between A \ R (R tombstone set).
 -- client can remove from R if element exists in R
-query : (Eq ele) => TwoPhaseReplica ele -> List ele
-query r = r.state1 \\ r.state2
+query : (Eq ele) => Replica ele -> List ele
+query r = r.addSet \\ r.removeSet
 
-add : (Eq ele) => ele -> TwoPhaseReplica ele -> TwoPhaseReplica ele
-add x replica = let newState = snoc replica.state1 x in
-                    { state1 := newState } replica
+add : (Eq ele) => ele -> Replica ele -> Replica ele
+add x replica = let newState = snoc replica.addSet x in
+                    { addSet := newState } replica
 
-remove : (Eq ele) => ele -> TwoPhaseReplica ele -> TwoPhaseReplica ele
-remove x replica = let newState = snoc replica.state2 x in
-                    { state2 := newState } replica
+remove : (Eq ele) => ele -> Replica ele -> Replica ele
+remove x replica = let newState = snoc replica.removeSet x in
+                    { removeSet := newState } replica
+
+merge : (Eq ele) => Replica ele -> Replica ele -> Replica ele
+merge r1 r2 = let newAddSet = union r1.addSet r2.addSet in
+                let newRemoveSet = union r1.removeSet r2.removeSet in
+                    { addSet := newAddSet, removeSet := newRemoveSet} r1
 
 testQuery : Test
 testQuery = let test = (query testReplica1) == [] in
                 MkTest "Query returns []" test
 
 testAdd : Test
-testAdd = let test = (add 2 testReplica1).state1 == [2] in
+testAdd = let test = (add 2 testReplica1).addSet == [2] in
                 MkTest "Add returnes [2]" test
 
 testRemove : Test
-testRemove = let test = (remove 2 testReplica1).state2 == [2] in
+testRemove = let test = (remove 2 testReplica1).removeSet == [2] in
                 MkTest "Remove returns [2]" test
 
 tests : List Test

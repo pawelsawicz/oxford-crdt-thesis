@@ -5,30 +5,30 @@ import Data.List
 import Data.Fin
 import Data.Nat
 
-record TwoPhaseReplica (size : Nat) (a : Type) where
-    constructor MkTwoPhaseReplica
+record Replica (size : Nat) where
+    constructor MkReplica
     replicaIndex : Fin size
-    state1 : Vect size a
-    state2 : Vect size a
+    pState : Vect size Nat
+    nState : Vect size Nat
 
-createReplica : Fin size -> Vect size a -> Vect size a -> TwoPhaseReplica size a
-createReplica ind xs ys = MkTwoPhaseReplica ind xs ys
+createReplica : Fin size -> Vect size Nat -> Vect size Nat -> Replica size
+createReplica ind xs ys = MkReplica ind xs ys
 
-testReplica : TwoPhaseReplica 3 Nat
+testReplica : Replica 3
 testReplica = createReplica 1 [0,0,0] [0,0,0]
 
-query : TwoPhaseReplica size Nat -> Integer
-query r = let pValue = natToInteger (sum r.state1) in
-          let nValue = natToInteger (sum r.state2) in
+query : Replica size -> Integer
+query r = let pValue = natToInteger (sum r.pState) in
+          let nValue = natToInteger (sum r.nState) in
             pValue - nValue
 
-increase : TwoPhaseReplica size Nat -> TwoPhaseReplica size Nat
-increase r = let newState = updateAt r.replicaIndex (+1) r.state1 in
-                { state1 := newState } r
+increase : Replica size -> Replica size
+increase r = let newState = updateAt r.replicaIndex (+1) r.pState in
+                { pState := newState } r
 
-decrease : TwoPhaseReplica size Nat -> TwoPhaseReplica size Nat
-decrease r = let newState = updateAt r.replicaIndex (+1) r.state2 in
-                { state2 := newState } r
+decrease : Replica size -> Replica size
+decrease r = let newState = updateAt r.replicaIndex (+1) r.nState in
+                { nState := newState } r
 
 mergeStrategy : Nat -> Nat -> Nat
 mergeStrategy x y = case x `compare` y of
@@ -40,16 +40,16 @@ mergeLocal : Vect len Nat -> Vect len Nat -> Vect len Nat
 mergeLocal [] [] = []
 mergeLocal (x::xs) (y::ys) = (mergeStrategy x y) :: mergeLocal xs ys
 
-testReplica1 : TwoPhaseReplica 3 Nat
+merge : Replica size -> Replica size -> Replica size
+merge r1 r2 = let pNewState = mergeLocal r1.pState r2.pState in
+                let nNewState = mergeLocal r1.nState r2.nState in
+                    { pState := pNewState, nState := nNewState} r1
+
+testReplica1 : Replica 3
 testReplica1 = createReplica 1 [1,0,0] [2,0,0]
 
-testReplica2 : TwoPhaseReplica 3 Nat
+testReplica2 : Replica 3
 testReplica2 = createReplica 1 [0,1,0] [0,0,2]
-
-merge : TwoPhaseReplica size Nat -> TwoPhaseReplica size Nat -> TwoPhaseReplica size Nat
-merge r1 r2 = let pNewState = mergeLocal r1.state1 r2.state1 in
-                let nNewState = mergeLocal r1.state2 r2.state2 in
-                    { state1 := pNewState, state2 := nNewState} r1
 
 data Test = MkTest String Bool
 
@@ -58,19 +58,19 @@ testQuery = let test = query testReplica == 0 in
                 MkTest "Query should equal to 0" test
 
 testIncrease : Test
-testIncrease = let test = (increase testReplica).state1 == [0,1,0] in
+testIncrease = let test = (increase testReplica).pState == [0,1,0] in
                 MkTest "Increase should equal to [0,1,0]" test
 
 testDecrease : Test
-testDecrease = let test = (decrease testReplica).state2 == [0,1,0] in
+testDecrease = let test = (decrease testReplica).nState == [0,1,0] in
                 MkTest "Decrease should equal to [0,1,0]" test
 
 testMergePositive : Test
-testMergePositive = let test = (merge testReplica1 testReplica2).state1 == [1,1,0] in
+testMergePositive = let test = (merge testReplica1 testReplica2).pState == [1,1,0] in
                 MkTest "Merge should equal to [1,1,0]" test
 
 testMergeNegative : Test
-testMergeNegative = let test = (merge testReplica1 testReplica2).state2 == [2,0,2] in
+testMergeNegative = let test = (merge testReplica1 testReplica2).nState == [2,0,2] in
                 MkTest "Merge should equal to [1,1,0]" test
 
 tests : List Test
