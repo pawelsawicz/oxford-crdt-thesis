@@ -9,16 +9,10 @@ interface Ord ty => Crdt ty where
     mergeCrdt : ty -> ty -> ty
 
 Crdt Nat where
-    mergeCrdt x y = case x `compare` y of
-                            LT => y
-                            GT => x
-                            EQ => x
+    mergeCrdt x y = if x <= y then y else x
 
 Crdt Bool where
-    mergeCrdt x y = case x `compare` y of
-                            LT => y
-                            GT => x
-                            EQ => x
+    mergeCrdt x y = if x <= y then y else x
 
 Crdt a => Crdt (Vect m a) where
     mergeCrdt [] [] = []
@@ -93,11 +87,11 @@ merge r1 r2 = let newState = mergeCrdt r1.payload r2.payload in
 record CommutativeMonoid (carrier : Type) where
   constructor MkCMon
   op : carrier -> carrier -> carrier
+  neutral : carrier
   commutative : (x, y : carrier) -> op x y = op y x -- the commutativity proof
---  neutral : carrier
---   identity : (x : carrier) -> op neutral x = x -- the identity proof
---   associativitiy : (x, y, z : carrier) -> op x (op y z) = op (op x y) z -- the associativitiy proof
---   commutative : (x, y : carrier) -> op x y = op y x -- the commutativity proof
+  identity : (x : carrier) -> op neutral x = x -- the identity proof
+  associativitiy : (x, y, z : carrier) -> op x (op y z) = op (op x y) z -- the associativitiy proof
+  commutative : (x, y : carrier) -> op x y = op y x -- the commutativity proof
 
 partialOrdering : Nat -> Nat -> Nat
 partialOrdering x y = case x `compare` y of
