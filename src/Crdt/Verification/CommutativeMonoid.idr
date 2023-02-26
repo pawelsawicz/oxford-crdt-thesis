@@ -1,4 +1,4 @@
-module CommutativeMonoid
+module Verification.CommutativeMonoid
 
 %default total
 

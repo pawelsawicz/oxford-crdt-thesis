@@ -1,5 +1,9 @@
 module Crdt
 
+import Data.List
+import Data.Vect
+import Data.Nat
+
 public export
 interface Ord ty => Crdt ty where
     mergeCrdt : ty -> ty -> ty

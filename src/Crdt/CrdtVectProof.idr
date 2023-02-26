@@ -2,8 +2,8 @@ module CrdtVectProof
 
 import Data.Vect
 import Data.Nat
-import CommutativeMonoid
-import CoreCrdt.Crdt
+import Verification.CommutativeMonoid
+import Crdt
 import CrdtNatProof
 
 %default total
@@ -41,8 +41,8 @@ merge_vect_assoc (x::xs) (y::ys) (z::zs) = let rec = mergeCrdt_nat_assoc x y z i
                                            rewrite rec2 in Refl
 
 public export
-vectNatCrdtCommutativeMonoid : {n : Nat} -> CommutativeMonoid (Vect n Nat)
-vectNatCrdtCommutativeMonoid = MkCMon 
+commutativeMonoidProof : {n : Nat} -> CommutativeMonoid (Vect n Nat)
+commutativeMonoidProof = MkCMon 
                                 mergeCrdt
                                 (Data.Vect.replicate n Z)
                                 merge_vect_commutes

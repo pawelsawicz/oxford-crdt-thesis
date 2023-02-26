@@ -2,7 +2,8 @@ module CrdtListProof
 
 import Data.Vect
 import Data.Nat
-import CommutativeMonoid
+import Verification.CommutativeMonoid
+import Crdt
 import CrdtNatProof
 
 %default total

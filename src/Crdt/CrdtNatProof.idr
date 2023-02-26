@@ -4,8 +4,8 @@ import Data.Vect
 import Data.List
 import Data.Fin
 import Data.Nat
-import CommutativeMonoid
-import CoreCrdt.Crdt
+import Verification.CommutativeMonoid
+import Crdt
 
 %default total
 
@@ -37,8 +37,9 @@ mergeCrdt_nat_identity : (n : Nat) -> mergeCrdt Z n = n
 mergeCrdt_nat_identity Z = Refl
 mergeCrdt_nat_identity (S k) = Refl
 
-natCrdtCommutativeMonoid : CommutativeMonoid Nat
-natCrdtCommutativeMonoid = MkCMon
+public export
+commutativeMonoidProof : CommutativeMonoid Nat
+commutativeMonoidProof = MkCMon
                              mergeCrdt
                              Z
                              mergeCrdt_nat_commutes
