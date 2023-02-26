@@ -5,7 +5,7 @@ module CrdtPairProof
 import Data.Vect
 import Data.Nat
 import CommutativeMonoid
-import VerifiedCrdt
+import CoreCrdt.Crdt
 import CrdtVectProof
 
 %default total

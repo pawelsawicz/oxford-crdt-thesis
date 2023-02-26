@@ -5,7 +5,7 @@ import Data.List
 import Data.Fin
 import Data.Nat
 import CommutativeMonoid
-import VerifiedCrdt
+import CoreCrdt.Crdt
 
 %default total
 
