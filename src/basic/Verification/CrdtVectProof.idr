@@ -8,6 +8,7 @@ import CrdtNatProof
 
 %default total
 
+public export
 merge_vect_commutes : (xs, ys : (Vect n Nat)) -> mergeCrdt xs ys = mergeCrdt ys xs
 merge_vect_commutes [] [] = Refl
 merge_vect_commutes (x::xs) (y::ys) = let rec = mergeCrdt_nat_commutes x y in 
@@ -15,6 +16,7 @@ merge_vect_commutes (x::xs) (y::ys) = let rec = mergeCrdt_nat_commutes x y in
                                         rewrite rec in
                                         rewrite rec2 in Refl
 
+public export
 merge_vect_idempotent : (xs : (Vect n Nat)) -> mergeCrdt xs xs = xs
 merge_vect_idempotent [] = Refl
 merge_vect_idempotent (x::xs) = let rec = mergeCrdt_nat_idempotent x in
@@ -22,6 +24,7 @@ merge_vect_idempotent (x::xs) = let rec = mergeCrdt_nat_idempotent x in
                                   rewrite rec in
                                   rewrite rec2 in Refl
 
+public export
 merge_vect_identity : {n : Nat} -> (xs : (Vect n Nat)) -> mergeCrdt (Data.Vect.replicate n Z) xs = xs
 merge_vect_identity [] = Refl
 merge_vect_identity (x::xs) = let rec = mergeCrdt_nat_identity x in
@@ -29,6 +32,7 @@ merge_vect_identity (x::xs) = let rec = mergeCrdt_nat_identity x in
                               rewrite rec in
                               rewrite rec2 in Refl
 
+public export
 merge_vect_assoc : (xs, ys, zs : (Vect n Nat)) -> mergeCrdt xs (mergeCrdt ys zs) = mergeCrdt (mergeCrdt xs ys) zs
 merge_vect_assoc [] [] [] = Refl
 merge_vect_assoc (x::xs) (y::ys) (z::zs) = let rec = mergeCrdt_nat_assoc x y z in

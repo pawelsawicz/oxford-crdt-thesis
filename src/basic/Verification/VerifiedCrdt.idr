@@ -36,7 +36,9 @@ Crdt Nat where
 
 public export
 Crdt Bool where
-    mergeCrdt = lubBool
+    mergeCrdt True _ = True
+    mergeCrdt _ True = True
+    mergeCrdt _ _ = False
 
 public export
 Crdt a => Crdt (Vect m a) where
@@ -44,18 +46,18 @@ Crdt a => Crdt (Vect m a) where
     mergeCrdt (x::xs) (y::ys) = (mergeCrdt x y) :: mergeCrdt xs ys
 
 public export
+Crdt a => Crdt b => Crdt (a, b) where
+    mergeCrdt (x1, y1) (x2, y2) = ((mergeCrdt x1 x2), (mergeCrdt y1 y2))
+
+public export
+Crdt a => Crdt (List a) where
+    mergeCrdt [] [] = []
+    mergeCrdt xs ys = union xs ys
+
+public export
 record Replica (a : Type) where
     constructor MkReplica
     payload : (Crdt a) => a
-
--- record CommutativeMonoid (carrier : Type) where
---   constructor MkCMon
---   op : carrier -> carrier -> carrier
---   neutral : carrier
---   commutative : (x, y : carrier) -> op x y = op y x
---   idempotent : (x : carrier) -> op x x = x
---   identity : (x : carrier) -> op neutral x = x
---   associativitiy : (x, y, z : carrier) -> op x (op y z) = op (op x y) z
 
 -- mergeCrdt_nat_commutes : (n, m : Nat) -> mergeCrdt n m = mergeCrdt m n
 -- mergeCrdt_nat_commutes Z Z = Refl
