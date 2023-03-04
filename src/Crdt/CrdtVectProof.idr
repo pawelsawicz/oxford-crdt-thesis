@@ -42,19 +42,23 @@ merge_vect_identity (x::xs) =
     rewrite rec2 in Refl
 
 public export
-merge_vect_assoc : (xs, ys, zs : (Vect n Nat)) -> mergeCrdt xs (mergeCrdt ys zs) = mergeCrdt (mergeCrdt xs ys) zs
+merge_vect_assoc : (xs, ys, zs : (Vect n Nat)) ->
+  mergeCrdt xs (mergeCrdt ys zs) = mergeCrdt (mergeCrdt xs ys) zs
+
 merge_vect_assoc [] [] [] = Refl
-merge_vect_assoc (x::xs) (y::ys) (z::zs) = let rec = mergeCrdt_nat_assoc x y z in
-                                           let rec2 = merge_vect_assoc xs ys zs in
-                                           rewrite rec in
-                                           rewrite rec2 in Refl
+merge_vect_assoc (x::xs) (y::ys) (z::zs) = 
+  let rec = mergeCrdt_nat_assoc x y z in
+  let rec2 = merge_vect_assoc xs ys zs in
+    rewrite rec in
+    rewrite rec2 in Refl
 
 public export
 commutativeMonoidProof : {n : Nat} -> CommutativeMonoid (Vect n Nat)
-commutativeMonoidProof = MkCMon
-                          mergeCrdt
-                          (Data.Vect.replicate n Z)
-                          merge_vect_commutes
-                          merge_vect_idempotent
-                          merge_vect_identity
-                          merge_vect_assoc
+commutativeMonoidProof = 
+  MkCMon
+    mergeCrdt
+    (Data.Vect.replicate n Z)
+    merge_vect_commutes
+    merge_vect_idempotent
+    merge_vect_identity
+    merge_vect_assoc

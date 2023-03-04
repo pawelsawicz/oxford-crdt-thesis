@@ -1,6 +1,4 @@
-module Replica
-
-public export
+module Crdts
 
 import Crdt
 
@@ -12,5 +10,8 @@ merge : (Crdt a) => Replica a -> Replica a -> Replica a
 merge r1 r2 = let newState = mergeCrdt r1.payload r2.payload in
                 {payload := newState} r1
 
-increment : Replica (Vect k Nat) -> Replica (Vect k Nat)
-increment r1 r2 = ?hole
+-- query : Replica a -> a
+-- query = ?hole
+
+-- increment : Replica (Vect k Nat) -> Replica (Vect k Nat)
+-- increment r1 r2 = ?hole
