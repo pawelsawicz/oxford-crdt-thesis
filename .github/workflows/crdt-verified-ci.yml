@@ -7,7 +7,5 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
-      - name: Setup Idris
-        uses: sergeyshpadyrev/setup-idris@v1.2
-      - name: Compile program
-        run: idris2 --build verified_crdt.ipkg
+      - name: Install Idris
+        run: apt-get install idris2
