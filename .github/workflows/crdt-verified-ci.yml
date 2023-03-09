@@ -8,4 +8,4 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
       - name: Install Idris
-        run: apt-get install idris2
+        run: sudo apt-get install idris2
