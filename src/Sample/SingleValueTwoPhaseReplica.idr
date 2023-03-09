@@ -6,10 +6,10 @@ import Data.Fin
 import Data.Nat
 
 record Replica (size : Nat) where
-    constructor MkReplica
-    replicaIndex : Fin size
-    pState : Vect size Nat
-    nState : Vect size Nat
+  constructor MkReplica
+  replicaIndex : Fin size
+  pState : Vect size Nat
+  nState : Vect size Nat
 
 createReplica : Fin size -> Vect size Nat -> Vect size Nat -> Replica size
 createReplica ind xs ys = MkReplica ind xs ys
@@ -18,32 +18,37 @@ testReplica : Replica 3
 testReplica = createReplica 1 [0,0,0] [0,0,0]
 
 query : Replica size -> Integer
-query r = let pValue = natToInteger (sum r.pState) in
-          let nValue = natToInteger (sum r.nState) in
-            pValue - nValue
+query r = 
+  let pValue = natToInteger (sum r.pState) in
+  let nValue = natToInteger (sum r.nState) in
+    pValue - nValue
 
 increase : Replica size -> Replica size
-increase r = let newState = updateAt r.replicaIndex (+1) r.pState in
-                { pState := newState } r
+increase r =
+  let newState = updateAt r.replicaIndex (+1) r.pState in
+    { pState := newState } r
 
 decrease : Replica size -> Replica size
-decrease r = let newState = updateAt r.replicaIndex (+1) r.nState in
-                { nState := newState } r
+decrease r =
+  let newState = updateAt r.replicaIndex (+1) r.nState in
+    { nState := newState } r
 
 mergeStrategy : Nat -> Nat -> Nat
-mergeStrategy x y = case x `compare` y of
-                            LT => y
-                            GT => x
-                            EQ => x
+mergeStrategy x y =
+  case x `compare` y of
+    LT => y
+    GT => x
+    EQ => x
 
 mergeLocal : Vect len Nat -> Vect len Nat -> Vect len Nat
 mergeLocal [] [] = []
 mergeLocal (x::xs) (y::ys) = (mergeStrategy x y) :: mergeLocal xs ys
 
 merge : Replica size -> Replica size -> Replica size
-merge r1 r2 = let pNewState = mergeLocal r1.pState r2.pState in
-                let nNewState = mergeLocal r1.nState r2.nState in
-                    { pState := pNewState, nState := nNewState} r1
+merge r1 r2 =
+  let pNewState = mergeLocal r1.pState r2.pState in
+  let nNewState = mergeLocal r1.nState r2.nState in
+    { pState := pNewState, nState := nNewState} r1
 
 testReplica1 : Replica 3
 testReplica1 = createReplica 1 [1,0,0] [2,0,0]

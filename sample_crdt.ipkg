@@ -1,0 +1,19 @@
+package Sample_Crdt
+
+version = 0.0.1
+brief = "Examples used in the dissertation"
+readme = "Readme.md"
+authors = "Pawel Sawicz"
+
+sourcedir = "src/Sample"
+builddir = "build"
+outputdir = "out"
+
+modules = 
+  Log
+, SetReplica
+, SetReplicaR
+, SingleValueR
+, SingleValueReplica
+, SingleValueTwoPhaseReplica
+, TwoPhaseSetReplica

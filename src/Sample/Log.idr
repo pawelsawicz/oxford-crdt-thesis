@@ -1,4 +1,4 @@
-module SetReplica
+module Log
 
 import Data.Vect
 import Data.List

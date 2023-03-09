@@ -8,9 +8,9 @@ import Data.Nat
 data Test = MkTest String Bool
 
 record Replica (a : Type) where
-    constructor MkReplica
-    addSet : List a
-    removeSet : List a
+  constructor MkReplica
+  addSet : List a
+  removeSet : List a
 
 createReplica : List a -> List a -> Replica a
 createReplica xs ys = MkReplica xs ys
@@ -30,17 +30,20 @@ query : (Eq ele) => Replica ele -> List ele
 query r = r.addSet \\ r.removeSet
 
 add : (Eq ele) => ele -> Replica ele -> Replica ele
-add x replica = let newState = snoc replica.addSet x in
-                    { addSet := newState } replica
+add x replica =
+  let newState = snoc replica.addSet x in
+    { addSet := newState } replica
 
 remove : (Eq ele) => ele -> Replica ele -> Replica ele
-remove x replica = let newState = snoc replica.removeSet x in
-                    { removeSet := newState } replica
+remove x replica =
+  let newState = snoc replica.removeSet x in
+    { removeSet := newState } replica
 
 merge : (Eq ele) => Replica ele -> Replica ele -> Replica ele
-merge r1 r2 = let newAddSet = union r1.addSet r2.addSet in
-                let newRemoveSet = union r1.removeSet r2.removeSet in
-                    { addSet := newAddSet, removeSet := newRemoveSet} r1
+merge r1 r2 =
+  let newAddSet = union r1.addSet r2.addSet in
+  let newRemoveSet = union r1.removeSet r2.removeSet in
+    { addSet := newAddSet, removeSet := newRemoveSet} r1
 
 testQuery : Test
 testQuery = let test = (query testReplica1) == [] in
