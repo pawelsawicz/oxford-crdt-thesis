@@ -1,0 +1,13 @@
+on: [push]
+name: Verified CRDT Build
+jobs:
+  runidris:
+    name: Run Idris
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+      - name: Setup Idris
+        uses: sergeyshpadyrev/setup-idris@v1.2
+      - name: Compile program
+        run: idris2 --build verified_crdt.ipkg
