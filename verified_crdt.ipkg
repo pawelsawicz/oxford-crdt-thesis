@@ -1,4 +1,4 @@
-package Crdt
+package Verified_Crdt
 
 version = 0.0.1
 brief = "Crdt library"

@@ -1,4 +1,9 @@
-on: [push]
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+
 name: Verified CRDT Build
 jobs:
   runidris:
@@ -7,9 +12,7 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
-      - name: Apt Update
-        run: sudo apt update
-      - name: Install Snap
-        run: sudo apt install snapd
-      - name: Install Idris2
-        run: sudo snap install idris2 --edge --classic
+      - uses: cachix/install-nix-action@v19
+        with:
+          nix_path: nixpkgs=channel:nixos-unstable
+      - run: nix-build
