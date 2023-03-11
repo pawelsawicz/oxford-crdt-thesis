@@ -4,15 +4,18 @@ on:
       - main
   pull_request:
 
-name: CRDT Library Build
+name: Build - Verified CRDT 
 jobs:
   runidris:
-    name: Run Idris
+    name: Build
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
-      - name: Setup Idris
-        uses: sergeyshpadyrev/setup-idris@v1.2
-      - name: Compile program
-        run: idris2 --build crdt.ipkg
+        with:
+          fetch-depth: 0
+      - uses: cachix/install-nix-action@v19
+        with:
+          nix_path: nixpkgs=channel:nixos-unstable
+      - run: nix-shell
+      - run: nix-shell --command "idris2 --build crdt.ipkg"

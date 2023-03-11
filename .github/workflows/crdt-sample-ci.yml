@@ -4,7 +4,7 @@ on:
       - main
   pull_request:
 
-name: Disseration Samples
+name: Build - Disseration Samples
 jobs:
   runidris:
     name: Build

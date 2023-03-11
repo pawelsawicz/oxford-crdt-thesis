@@ -4,7 +4,7 @@ on:
       - main
   pull_request:
 
-name: Verified CRDT Build
+name: Build - Verified CRDT 
 jobs:
   runidris:
     name: Build
@@ -15,7 +15,7 @@ jobs:
         with:
           fetch-depth: 0
       - uses: cachix/install-nix-action@v19
-        env:
-          NIX_CONFIG: "experimental-features = nix-command flakes"
-      - run: nix build
-      - run: nix flake check
+        with:
+          nix_path: nixpkgs=channel:nixos-unstable
+      - run: nix-shell
+      - run: nix-shell --command "idris2 --build verified_crdt.ipkg"
