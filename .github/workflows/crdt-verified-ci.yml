@@ -18,3 +18,4 @@ jobs:
         env:
           NIX_CONFIG: "experimental-features = nix-command flakes"
       - run: nix build
+      - run: nix flake check
