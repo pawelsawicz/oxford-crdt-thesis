@@ -1,13 +1,18 @@
-on: [push]
-name: Dissertation Samples
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+
+name: Disseration Samples
 jobs:
   runidris:
-    name: Run Idris
+    name: Build
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
-      - name: Setup Idris
-        uses: sergeyshpadyrev/setup-idris@v1.2
-      - name: Compile program
-        run: idris2 --build sample_crdt.ipkg
+        with:
+          fetch-depth: 0
+      - uses: cachix/install-nix-action@v19
+      - run: nix-shell
