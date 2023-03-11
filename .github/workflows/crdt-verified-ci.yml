@@ -12,7 +12,9 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
+          with:
+            fetch-depth: 0
       - uses: cachix/install-nix-action@v19
-        with:
-          nix_path: nixpkgs=channel:nixos-unstable
-      - run: nix-build
+          env:
+            NIX_CONFIG: "experimental-features = nix-command flakes"
+      - run: nix build .#checks.x86_64-linux.idris2Tests -L
