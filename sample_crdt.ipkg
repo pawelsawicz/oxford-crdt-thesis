@@ -10,9 +10,9 @@ builddir = "build"
 outputdir = "out"
 
 modules =
-, SetReplica
+  SetReplica
 , SetReplicaR
-, SingleValueR
+, SingleValue
 , SingleValueReplica
 , SingleValueTwoPhaseReplica
 , TwoPhaseSetReplica
