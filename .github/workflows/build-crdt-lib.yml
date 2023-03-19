@@ -4,7 +4,7 @@ on:
       - main
   pull_request:
 
-name: Build - Verified CRDT 
+name: Build - CRDT Library
 jobs:
   runidris:
     name: Build
