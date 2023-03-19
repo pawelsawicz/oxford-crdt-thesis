@@ -9,8 +9,7 @@ sourcedir = "src/Sample"
 builddir = "build"
 outputdir = "out"
 
-modules = 
-  Log
+modules =
 , SetReplica
 , SetReplicaR
 , SingleValueR
