@@ -9,4 +9,8 @@ sourcedir = "src/Crdt"
 builddir = "build"
 outputdir = "out"
 
-modules = Crdt
+modules = 
+  Crdt
+, Replica
+, VectorClock
+, Log
