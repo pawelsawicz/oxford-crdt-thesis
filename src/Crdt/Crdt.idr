@@ -45,4 +45,4 @@ Crdt a => Crdt b => Crdt (a, b) where
 
 public export
 merge : (Crdt crdt) => (c1, c2 : (crdt)) -> crdt
-merge c1 c2 = mergeCrdt c1 c2
+merge = mergeCrdt
