@@ -2,6 +2,7 @@ module Replica
 
 import Crdt
 import Log
+import VectorClock
 
 import Data.List
 import Data.Vect
@@ -21,8 +22,8 @@ setReplica = MkReplica [0,1,2]
 vectorReplica : Replica (Vect 3 Nat)
 vectorReplica = MkReplica [0,8,0]
 
-logReplica : Replica (Log 3 (List (LogEvent String 3)) (Vect 3 Nat))
-logReplica = MkReplica (MkLog 0 [] defaultClock)
+logReplica : Replica (Log 3 String)
+logReplica = MkReplica (MkLog [] ((MkVectorClock 0 defaultClock)))
 
 data Test = MkTest String Bool
 
