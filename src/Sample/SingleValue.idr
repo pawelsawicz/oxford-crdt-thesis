@@ -1,4 +1,4 @@
-module SingleValueR
+module SingleValue
 
 import Data.Vect
 import Data.List
@@ -17,6 +17,9 @@ createReplica ind xs = MkReplica ind xs
 
 testReplica : Replica 3
 testReplica = createReplica 1 [0,0,0]
+
+queryVector : Replica size -> Vect size Nat
+queryVector r = r.state
 
 query : Replica size -> Nat
 query r = sum r.state
