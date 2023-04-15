@@ -1,10 +1,12 @@
-module CrdtVectProof
+module Verification.CrdtVectProof
 
 import Data.Vect
 import Data.Nat
 import Verification.CommutativeMonoid
-import Crdt
+
 import CrdtNatProof
+
+import Core.Crdt
 
 %default total
 

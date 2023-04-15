@@ -1,4 +1,4 @@
-package Crdt
+package crdt
 
 version = 0.0.1
 brief = "Crdt library"
@@ -9,8 +9,14 @@ sourcedir = "src/Crdt"
 builddir = "build"
 outputdir = "out"
 
-modules = 
-  Crdt
-, Replica
-, VectorClock
-, Log
+depends = contrib
+
+modules =
+  Core.Crdt
+, Core.GrowOnlyCounterCrdt
+, Core.GrowOnlySetCrdt
+, Core.PNCounterCrdt
+, Core.TwoPhaseSetCrdt
+, Core.LogCrdt
+, Verification.CommutativeMonoid
+, VerifiedCrdt

@@ -1,0 +1,13 @@
+package crdt-test
+
+authors    = "pawel-sawicz"
+version    = 0.5.0
+readme     = "README.md"
+
+main       = Main
+executable = "runTest"
+
+sourcedir  = "src"
+
+depends    = hedgehog
+           , crdt

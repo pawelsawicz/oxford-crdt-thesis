@@ -1,6 +1,6 @@
 
 ||| Proofs for pair type CRDT (a,b) i.e Positive-Negative Counter or Two Phase Set
-module CrdtPairProof
+module Verification.CrdtPairProof
 
 import Data.Vect
 import Data.Nat

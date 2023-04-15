@@ -1,0 +1,21 @@
+[custom.all.crdt]
+type   = "local"
+path   = "."
+ipkg   = "crdt.ipkg"
+test   = "test/test.ipkg"
+
+[custom.all.crdt-test]
+type   = "local"
+path   = "test"
+ipkg   = "test.ipkg"
+
+[custom.all.crdt-sample]
+type   = "local"
+path   = "sample"
+ipkg   = "crdt-sample.ipkg"
+test   = "test/test.ipkg"
+
+[custom.all.crdt-sample-test]
+type   = "local"
+path   = "sample/test"
+ipkg   = "test.ipkg"
