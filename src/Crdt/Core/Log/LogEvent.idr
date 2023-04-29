@@ -6,15 +6,15 @@ import Data.Vect
 %default total
 
 public export
-record LogEvent k where
+record LogEvent k a where
   constructor MkLogEvent
-  body : String
+  body : a
   clock : Vect k Nat
 
 public export
-Eq (LogEvent k) where
+Eq (LogEvent k a) where
   l1 == l2 = l1.clock == l2.clock
 
 public export
-Ord (LogEvent k) where
+Ord (LogEvent k a) where
   l1 `compare` l2 = l1.clock `compare` l2.clock

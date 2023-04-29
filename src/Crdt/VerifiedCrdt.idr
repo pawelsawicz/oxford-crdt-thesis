@@ -6,14 +6,11 @@ import Data.List
 import Data.Vect
 import Data.Nat
 
-import Verification.CrdtNatProof
-import Verification.CrdtVectProof
-import Verification.CrdtPairProof
+import Verification.Proofs.CrdtNatProof
+import Verification.Proofs.CrdtVectProof
+import Verification.Proofs.CrdtPairProof
 
 %default total
-
--- natCommutativeMonoid : CommutativeMonoid Nat
--- natCommutativeMonoid = CrdtNatProof.commutativeMonoidProof
 
 vectNatCommutativeMonoid : {n : Nat} -> CommutativeMonoid (Vect n Nat)
 vectNatCommutativeMonoid = CrdtVectProof.commutativeMonoidProof

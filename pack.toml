@@ -19,3 +19,8 @@ test   = "test/test.ipkg"
 type   = "local"
 path   = "sample/test"
 ipkg   = "test.ipkg"
+
+[custom.all.crdt-evaluation]
+type   = "local"
+path   = "evaluation"
+ipkg   = "crdt-evaluation.ipkg"

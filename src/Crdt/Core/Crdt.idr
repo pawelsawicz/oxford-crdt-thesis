@@ -4,12 +4,12 @@ import Data.List
 import Data.Vect
 import Data.Nat
 
+import Core.Semilattice
 import Core.GrowOnlyCounterCrdt
 import Core.GrowOnlySetCrdt
 import Core.PNCounterCrdt
 import Core.TwoPhaseSetCrdt
 import Core.LogCrdt
-
 import Core.Log.LogEvent
 
 import Data.SortedSet
@@ -24,7 +24,7 @@ record Crdt (a : Type) where
 
   query : a -> QueryType
   update : UpdateType
-  merge : a -> a -> a
+  merge : (JoinSemilattice a) => a -> a -> a
 
 public export
 createVectorClock : {n : Nat} -> Crdt (Vect n Nat)
@@ -35,7 +35,7 @@ createVectorClock =
   (Fin n -> Vect n Nat -> Vect n Nat)
   query
   update
-  mergeCrdt
+  lub
 
 public export
 createGrowOnlyCounter : {n : Nat} -> Crdt (Vect n Nat)
@@ -46,7 +46,7 @@ createGrowOnlyCounter =
   (Fin n -> Vect n Nat -> Vect n Nat)
   queryCounter
   update
-  mergeCrdt
+  lub
 
 public export
 pnCounter : {n : Nat} -> Crdt (Vect n Nat, Vect n Nat)
@@ -57,7 +57,7 @@ pnCounter =
   (CrdtOperation -> Fin n -> (Vect n Nat, Vect n Nat) -> Vect n Nat)
   query
   update
-  mergeCrdt
+  lub
 
 public export
 createGrowOnlySet : {a : Type} -> (Eq a) => Crdt (SortedSet a)
@@ -68,7 +68,7 @@ createGrowOnlySet =
   (SortedSet a -> (ele : a) -> SortedSet a)
   query
   update
-  mergeCrdt
+  lub
 
 public export
 createTwoPhaseSet : {a : Type} -> (Eq a) => Crdt (SortedSet a, SortedSet a)
@@ -79,16 +79,16 @@ createTwoPhaseSet =
   (SetOperation -> (SortedSet a, SortedSet a) -> (ele : a) -> SortedSet a)
   query
   update
-  mergeCrdt
+  lub
 
 public export
-createLog : {k : Nat} -> 
-  Crdt (SortedSet (LogEvent k), (Vect k Nat))
+createLog : {k : Nat} -> {a : Type} -> 
+  Crdt (SortedSet (LogEvent k a), (Vect k Nat))
 
 createLog = MkCrdt
-  (SortedSet (LogEvent k))
-  ((Fin k) -> (SortedSet (LogEvent k), (Vect k Nat)) -> 
-    (ele : String) -> (SortedSet (LogEvent k), (Vect k Nat)))
+  (SortedSet (LogEvent k a))
+  ((Fin k) -> (SortedSet (LogEvent k a), (Vect k Nat)) -> 
+    (ele : a) -> (SortedSet (LogEvent k a), (Vect k Nat)))
   query
   update
-  mergeCrdt
+  lub

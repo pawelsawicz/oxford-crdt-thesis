@@ -5,7 +5,7 @@ import Data.List
 import Data.Fin
 import Data.Nat
 
-import GrowOnlyCounter
+import Core.GrowOnlyCounterCrdt
 
 %default total
 

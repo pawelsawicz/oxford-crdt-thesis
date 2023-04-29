@@ -12,11 +12,13 @@ outputdir = "out"
 depends = contrib
 
 modules =
-  Core.Crdt
+  Core.Semilattice
+, Core.Crdt
 , Core.GrowOnlyCounterCrdt
 , Core.GrowOnlySetCrdt
 , Core.PNCounterCrdt
 , Core.TwoPhaseSetCrdt
 , Core.LogCrdt
+, Core.Log.LogEvent
 , Verification.CommutativeMonoid
 , VerifiedCrdt

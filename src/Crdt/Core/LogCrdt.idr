@@ -11,15 +11,15 @@ import Data.SortedSet
 %default total
 
 public export
-query : (SortedSet (LogEvent k), (Vect k Nat)) ->
-  SortedSet (LogEvent k)
+query : (SortedSet (LogEvent k a), (Vect k Nat)) ->
+  SortedSet (LogEvent k a)
 
 query (l, c) = l
 
 public export
-update : (Fin k) -> (SortedSet (LogEvent k), (Vect k Nat)) ->
-  (ele : String) ->
-  (SortedSet (LogEvent k), (Vect k Nat))
+update : (Fin k) -> (SortedSet (LogEvent k a), (Vect k Nat)) ->
+  (elem : a) ->
+  (SortedSet (LogEvent k a), (Vect k Nat))
 
 update i (l, c) ele =
   let updatedClock = update i c in
@@ -28,8 +28,8 @@ update i (l, c) ele =
    (updatedLog, updatedClock)
 
 public export
-mergeCrdt : (xs, ys : (SortedSet (LogEvent k), (Vect k Nat))) ->
-  (SortedSet (LogEvent k), (Vect k Nat))
+mergeCrdt : (xs, ys : (SortedSet (LogEvent k a), (Vect k Nat))) ->
+  (SortedSet (LogEvent k a), (Vect k Nat))
 
 mergeCrdt (l1, c1) (l2, c2) =
   let clock_merge = mergeCrdt c1 c2 in

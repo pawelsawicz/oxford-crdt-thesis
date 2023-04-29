@@ -6,8 +6,7 @@ import Data.Fin
 import Data.Nat
 
 import Data.SortedSet
-
-import GrowOnlySet
+import Core.GrowOnlySetCrdt
 
 %default total
 
