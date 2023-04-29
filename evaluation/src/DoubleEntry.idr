@@ -11,6 +11,7 @@ import Core.Log.LogEvent
 import Core.Semilattice
 
 %default total
+%hide Prelude.toList
 
 data Direction = Debit | Credit
 
@@ -31,8 +32,8 @@ record Entry direction where
 
 record DoubleEntry where
   constructor MkDoubleEntry
-  creditEntry : Entry Credit
   debitEntry : Entry Debit
+  creditEntry : Entry Credit
 
 createCreditEntry : Double -> Account -> Entry Credit
 createCreditEntry a acc = MkEntry (MkAmount a Credit) acc
@@ -41,10 +42,11 @@ createDebitEntry : Double -> Account -> Entry Debit
 createDebitEntry a acc = MkEntry (MkAmount a Debit) acc
 
 createDoubleEntry : (amount : Double) -> DoubleEntry
-createDoubleEntry a = MkDoubleEntry (createCreditEntry a Bob) (createDebitEntry a Alice)
+createDoubleEntry a = MkDoubleEntry (createDebitEntry a Alice) (createCreditEntry a Bob)
 
-isAccountType : Entry d -> Account -> Bool
-isAccountType e a = e.account == a
+createDoubleEntry' : Double -> (debit : Account) -> (credit: Account) -> DoubleEntry
+createDoubleEntry' amount d c = 
+  MkDoubleEntry (createDebitEntry amount d) (createCreditEntry amount c)
 
 doubleEntryMap : DoubleEntry -> (Entry Credit, Entry Debit)
 doubleEntryMap de = (de.creditEntry, de.debitEntry)
@@ -55,25 +57,28 @@ unwrapDoubleEntry xs =
     entries
 
 filterAccounts : Account -> (List (Entry c), List (Entry d)) -> (List (Entry c), List (Entry d))
-filterAccounts acc (xs,ys) = (filter (\x => isAccountType x acc) xs, filter (\y => isAccountType y acc) ys)
+filterAccounts acc xs =
+  bimap filterByAccountType filterByAccountType xs where
+    filterByAccountType : List (Entry a) -> List (Entry a)
+    filterByAccountType entries = filter (\entry => isAccountType acc entry) entries where
+      isAccountType : Account -> Entry e -> Bool
+      isAccountType a e = e.account == a
 
 calculateBalance : (List (Entry c), List (Entry d)) -> Double
 calculateBalance (xs,ys) =
   let creditAmounts = map (\(MkEntry (MkAmount a dir) acc) => a) xs in
   let debitAmounts = map (\(MkEntry (MkAmount a dir) acc) => a) ys in
-  let credits = foldl (+) 0 creditAmounts in
+  let credits = (-1*) $ foldl (+) 0 creditAmounts in
   let debits = foldl (+) 0 debitAmounts in
-    credits - debits
+    credits + debits
 
 accountBalance : (List (Entry c), List (Entry d)) -> Account -> Double
 accountBalance xs acc = calculateBalance $ filterAccounts acc xs
 
 queryForAccount : (SortedSet (LogEvent k DoubleEntry), (Vect k Nat)) 
   -> (Account -> Double)
-queryForAccount (xs,_) = 
-  let list = Data.SortedSet.toList xs in
-  let accountEntries = unzip $ unwrapDoubleEntry list in
-    accountBalance accountEntries
+queryForAccount (xs,_) =
+  (accountBalance. unzip . unwrapDoubleEntry . toList) xs
 
 initial : (SortedSet (LogEvent 2 DoubleEntry), (Vect 2 Nat))
 initial = (empty, [0,0])
